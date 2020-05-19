@@ -1,0 +1,26 @@
+.header-container {
+    background-color: dodgerblue;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #fff
+}
+
+.header-title {
+    font-size: 2em;
+    color: #fff;
+    margin: 16px 0 0;
+}
+
+.restart-button {
+    margin: 16px 0 0;
+    background-color: #ffff99;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    position: absolute;
+    right: 20px;
+}

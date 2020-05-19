@@ -1,0 +1,27 @@
+@keyframes confettiFall {
+    0% {margin-top: 0px;}
+    50% {margin-top: 50%;}
+    100% {margin-top: 100%;}
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.confetti-container {
+    height: 100vh;
+    position: absolute;
+    right: 0;
+    left: 0;
+    animation-name: fadeIn;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+
+.confetti {
+    animation-name: confettiFall;
+    animation-delay: 3s;
+    animation-duration: 6s;
+    animation-fill-mode: forwards;
+}
