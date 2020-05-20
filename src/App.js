@@ -25,8 +25,6 @@ class App extends Component {
   }
   
   handleClick = (cardIndex) => {
-    //make copy of card clicked, update 2 states 
-    //make copy of cards array and update it with updated card
     const card = {
       ...this.state.cards[cardIndex]
     }
@@ -35,10 +33,7 @@ class App extends Component {
     const cards = [...this.state.cards];
     cards[cardIndex] = card;
 
-    //get name of card clicked
     const cardName = card.name;
-
-    //add card name and index to currentPair array, then create copy of arrY
     const { currentPair } = this.state;
     const cardObj = {
       name: cardName,
@@ -47,7 +42,6 @@ class App extends Component {
     currentPair.push(cardObj);
     const currentPairs = [...currentPair];
     
-    //set state of both cards array and current pair array, add to counter
     this.setState((prevState, props) => {
       return {
         cards: cards, 
@@ -56,112 +50,91 @@ class App extends Component {
       };
     });
 
-    
-    //if there are 2 cards in current pair array then send it to checkForMatch()
     if (currentPair.length === 2) {
-      this.checkForMatch(currentPair);
+      const cardOne = currentPair[0];
+      const cardTwo = currentPair[1];
+      this.checkForMatch(cardOne, cardTwo);
     }
 
   }
 
-  checkForMatch = (currentPair) => {
-    //check if both items in the arry are the same
-    if (currentPair[0].name === currentPair[1].name) {
-      //grab indexes of cards
-      const currentIndexes = [currentPair[0].index, currentPair[1].index];
-      
-      //get name of cards
-      const name = currentPair[0].name;
+  checkForMatch = (cardOne, cardTwo) => {
+    if (cardOne.name === cardTwo.name) {
 
-      //grab cards from cards array that need to be updated by matching it to the name
-      const itemsToUpdate = this.state.cards.forEach((element,index) => {
-        if (element.name === name) {
-          element.feedback = "Matched";
-          element.flipped = true;
+      const cardOneInArray = this.state.cards[cardOne.index];
+      const cardOneCopy = {...cardOneInArray};
+      cardOneCopy.feedback = "matched";
+      cardOneCopy.flipped = true;
 
-          //make copy of cards, update that card within copy
-          const cards = [...this.state.cards];
-          cards[index] = element;
-          this.setState({cards: cards});
-        }
-      });
-      this.handleResetMatch()
+      const cardTwoInArray = this.state.cards[cardTwo.index];
+      const cardTwoCopy = {...cardTwoInArray};
+      cardTwoCopy.feedback = "matched";
+      cardTwoCopy.flipped = true;
+
+      const cards = [...this.state.cards];
+      cards[cardOne.index] = cardOneCopy;
+      cards[cardTwo.index] = cardTwoCopy;
+      this.setState({cards: cards});
+      this.handleResetMatch();
+
       }
     else {
-      var cardOne = this.state.currentPair[0];
-      var cardTwo = this.state.currentPair[1];
       this.handleResetNoMatch(cardOne, cardTwo);
     }
     
   }
 
   handleResetMatch = () => {
-   const { currentPair, cards } = this.state;
 
-   let currentPairsUpdate = [...currentPair];
-   currentPairsUpdate = [];
-   this.setState({cards: cards, currentPair: currentPairsUpdate});
-
+   let currentPairs = [...this.state.currentPair];
+   currentPairs = [];
+   this.setState({currentPair: currentPairs});
    this.checkIfFinished();
   }
 
   handleResetNoMatch = (cardOne, cardTwo) => {
-    //make copy of card one to update
-    const cardOneToUpdate = {
-      ...this.state.cards[cardOne.index]
-    }
 
-    //make copy of card two to update
-    const cardTwoToUpdate = {
-      ...this.state.cards[cardTwo.index]
-    }
+    const cardOneInArray = this.state.cards[cardOne.index];
+    const cardOneCopy = {...cardOneInArray};
+    cardOneCopy.feedback = "hidden";
+    cardOneCopy.flipped = false;
 
-    //put those two cards in an array
-    const cardsToUpdate = [cardOneToUpdate, cardTwoToUpdate];
+    const cardTwoInArray = this.state.cards[cardTwo.index];
+    const cardTwoCopy = {...cardTwoInArray};
+    cardTwoCopy.feedback = "hidden";
+    cardTwoCopy.flipped = false;
 
-    //update flipped and feedback states of each card
-    cardsToUpdate.forEach((element) => {
-      element.flipped = false;
-      element.feedback = "hidden";
-    });
-
-    //make copy of cards array, update two cards in that array
     const cards = [...this.state.cards];
-    cards[cardOne.index] = cardOneToUpdate;
-    cards[cardTwo.index] = cardTwoToUpdate;
+    cards[cardOne.index] = cardOneCopy;
+    cards[cardTwo.index] = cardTwoCopy;
     
     //make copy of current pairs and reset state to empty array
-    const { currentPair } = this.state;
-    let currentPairsUpdate = [...currentPair];
+    let currentPairsUpdate = [...this.state.currentPair];
     currentPairsUpdate = [];
 
-    //delay resetting of cards
-    setTimeout(function() {
-      this.setState({cards: cards, currentPair: currentPairsUpdate});
-    }
-    .bind(this), 1000);
+
+    setTimeout( () => this.setState({cards: cards, currentPair: currentPairsUpdate}), 1000)
   }
   
   handleRestart = () => {
-    //make copy of cards, reset all states to default
     const cards = [...this.state.cards];
     cards.forEach((element) => {
       element.flipped = false;
       element.feedback = "hidden";
     });
 
-    //make copy of current pairs and reset state to empty array
-    const { currentPair } = this.state;
-    let currentPairsUpdate = [...currentPair];
+    let currentPairsUpdate = [...this.state.currentPair];
     currentPairsUpdate = [];
 
     this.setState({cards: cards, currentPair: currentPairsUpdate, guesses: 0, gameFinished: false});
   }
 
+  //this needs to be fixed
   checkIfFinished = () => {
-    const isFinished = this.state.cards.every( (val) => val.feedback === "Matched");
-    
-    if (isFinished) {
+    // const isFinished = this.state.cards.every(val => console.log(val.feedback));
+    const matchedArray = this.state.cards.filter(card => card.feedback === "matched")
+
+    if (matchedArray.length >= 6) {
       this.setState({gameFinished: true});
     }
   }

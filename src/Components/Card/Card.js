@@ -7,7 +7,7 @@ const Card = (props) => {
         classNames.push("card-flipped");
     }
     
-    if (props.isMatched === "Matched") {
+    if (props.isMatched === "matched") {
         classNames.push("is-matched");
     }
     return(
