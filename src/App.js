@@ -19,6 +19,7 @@ class App extends Component {
     this.state = {
       cards,
       currentPair: [],
+      pairsAmount: 0,
       guesses: 0,
       gameFinished: false,
     };
@@ -88,8 +89,17 @@ class App extends Component {
 
    let currentPairs = [...this.state.currentPair];
    currentPairs = [];
-   this.setState({currentPair: currentPairs});
-   this.checkIfFinished();
+
+   this.setState((prevState, props) => {
+    return {
+      currentPair: currentPairs,
+      pairsAmount: prevState.pairsAmount + 1
+    };
+  });
+
+  console.log(this.state.pairsAmount)
+
+  this.checkIfFinished();
   }
 
   handleResetNoMatch = (cardOne, cardTwo) => {
@@ -112,7 +122,6 @@ class App extends Component {
     let currentPairsUpdate = [...this.state.currentPair];
     currentPairsUpdate = [];
 
-
     setTimeout( () => this.setState({cards: cards, currentPair: currentPairsUpdate}), 1000)
   }
   
@@ -131,10 +140,7 @@ class App extends Component {
 
   //this needs to be fixed
   checkIfFinished = () => {
-    // const isFinished = this.state.cards.every(val => console.log(val.feedback));
-    const matchedArray = this.state.cards.filter(card => card.feedback === "matched")
-
-    if (matchedArray.length >= 6) {
+    if (this.state.pairsAmount === 4) {
       this.setState({gameFinished: true});
     }
   }
